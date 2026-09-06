@@ -8,14 +8,33 @@
 import SwiftUI
 
 struct ContentView: View {
+
+    @State private var activity = "olahraga"
+    @State private var reminder = ""
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        VStack(spacing: 24) {
+
+            TextField("Aktivitas", text: $activity)
+                .textFieldStyle(.roundedBorder)
+
+            Text(reminder.isEmpty ? "Tulis aktivitas, lalu tekan tombol." : reminder)
+                .font(.title3)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity, minHeight: 120)
+
+            Button("Ingetin") {
+                generate()
+            }
+            .buttonStyle(.borderedProminent)
+            .disabled(activity.trimmingCharacters(in: .whitespaces).isEmpty)
         }
         .padding()
+        .animation(.default, value: reminder)
+    }
+
+    private func generate() {
+        reminder = ReminderData.getData().randomElement()?.message ?? ""
     }
 }
 
