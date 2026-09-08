@@ -11,6 +11,8 @@ struct ContentView: View {
 
     @State private var activity = "olahraga"
     @State private var reminder = ""
+    @State private var sedangJalan = false
+    @State private var pakaiCadangan = false
 
     var body: some View {
         VStack(spacing: 24) {
@@ -22,9 +24,15 @@ struct ContentView: View {
                 .font(.title3)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity, minHeight: 120)
+            
+            if pakaiCadangan {
+                Text("Model tidak menjawab — ini teks cadangan.")
+                    .font(.caption)
+                    .foregroundStyle(.orange)
+            }
 
-            Button("Ingetin") {
-                generate()
+            Button(sedangJalan ? "Sebentar…" : "Ingetin") {
+                Task { await generate() }
             }
             .buttonStyle(.borderedProminent)
             .disabled(activity.trimmingCharacters(in: .whitespaces).isEmpty)
@@ -33,7 +41,7 @@ struct ContentView: View {
         .animation(.default, value: reminder)
     }
 
-    private func generate() {
+    private func generate() async {
         reminder = ReminderData.getData().randomElement()?.message ?? ""
     }
 }
